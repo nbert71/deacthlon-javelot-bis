@@ -12,8 +12,8 @@ const game = require('./models/partie')
 const Partie = game(sequelize);
 
 (async () => {
-    await sequelize.sync({ force: true });
-    //await sequelize.sync();
+    //await sequelize.sync({ force: true });
+    await sequelize.sync();
 })()
 
 module.exports = {

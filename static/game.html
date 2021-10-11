@@ -105,4 +105,56 @@
     </div>
 </body>
 
+<script>
+    document.querySelector("#roll_dices").addEventListener("click", (event) => {
+        data = {
+            de1_ticked : document.querySelector('#tick1').checked,
+            de2_ticked : document.querySelector('#tick2').checked,
+            de3_ticked : document.querySelector('#tick3').checked,
+            de4_ticked : document.querySelector('#tick4').checked,
+            de5_ticked : document.querySelector('#tick5').checked,
+            de6_ticked : document.querySelector('#tick6').checked
+        }
+        console.log(data)
+
+        fetch("/roll_dices", {
+                'method': "POST",
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.querySelector('#dice1').textContent = data.de1;
+                document.querySelector('#dice2').textContent = data.de2;
+                document.querySelector('#dice3').textContent = data.de3;
+                document.querySelector('#dice4').textContent = data.de4;
+                document.querySelector('#dice5').textContent = data.de5;
+                document.querySelector('#dice6').textContent = data.de6;
+                document.querySelector('#score').textContent = data.score;
+                if (!data.de1_active) {
+                    document.querySelector("#tick1").disabled = true
+                }
+                if (!data.de2_active) {
+                    document.querySelector("#tick2").disabled = true
+                }
+                if (!data.de3_active) {
+                    document.querySelector("#tick3").disabled = true
+                }
+                if (!data.de4_active) {
+                    document.querySelector("#tick4").disabled = true
+                }
+                if (!data.de5_active) {
+                    document.querySelector("#tick5").disabled = true
+                }
+                if (!data.de6_active) {
+                    document.querySelector("#tick6").disabled = true
+                }
+            })
+        event.preventDefault();
+    })
+</script>
+
 </html>

@@ -46,26 +46,32 @@
 </body>
 
 <script>
+    function getCookie(name) {
+        var cookie, c;
+        cookies = document.cookie.split('; ');
+        for (var i = 0; i < cookies.length; i++) {
+            c = cookies[i].split('=');
+            if (c[0] == name) {
+                return c[1];
+            }
+        }
+        return "";
+    }
+
     document.querySelector('#new-game').addEventListener("click", (event) => {
         pseudo = document.querySelector("#pseudo").value;
         if (pseudo !== '') {
-            data = {
-                'pseudo': document.querySelector("#pseudo").value
-            }
-            
-            fetch("/new", {
-                'method': "POST",
-                'headers': {
-                    'Content-Type': 'application/json'
-                },
-                'body': JSON.stringify(data)
-            })
+            fetch("/new/?pseudo=" + pseudo)
+                .then(cookie => {
+                    console.log("COOOOKIE");
+                    document.cookie = cookie;
+                    console.log(getCookie("id_partie"));
+                });
             document.querySelector('#jouer').style.display = 'block';
         } else {
             alert("Vous devez saisir un pseudo pour créer une partie !");
         }
 
-        console.log(JSON.stringify(data, null, 2));
         //event.preventDefault();
         //location.reload();
     })
