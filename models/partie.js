@@ -2,6 +2,8 @@ const {
     DataTypes
 } = require('sequelize');
 
+
+// Structure de la base de données
 module.exports = (sequelize) => {
     return sequelize.define('Partie', {
         id: {

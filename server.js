@@ -1,5 +1,8 @@
-const path = require('path')
+/*
+Configuration du serveur
+*/
 
+const path = require('path')
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const db = require('./db');
@@ -10,15 +13,23 @@ const hostname = '127.0.0.1';
 const port = 3000;
 
 app.use(cookieParser())
-
 app.use("/static", express.static(path.join(__dirname, '/static')))
-
 app.get('/', (req, res) => {
     res.redirect(301, '/static/index.html')
 })
-
 app.use(express.json())
 
+app.listen(port, hostname);
+console.log(`Server running at http://${hostname}:${port}/`);
+
+
+
+
+/*
+Routes
+*/
+
+// Route qui génère les cookies
 app.get("/cookie/", (req, res) => {
     console.log(req.query)
     for (const property in req.query) {
@@ -29,7 +40,7 @@ app.get("/cookie/", (req, res) => {
     }
 })
 
-// Création de partie
+// Route qui crée une nouvelle partie
 app.use('/new', (req, res) => {
     pseudo = req.query.pseudo;
     console.log(pseudo);
@@ -56,37 +67,17 @@ app.use('/new', (req, res) => {
                 res.cookie("id_partie", partie.id);
                 res.cookie("pseudo", partie.pseudo);
                 res.cookie("compteur", partie.compteur);
-                res.end("prout");
-                //console.log(res.cookie);
+                res.end("");
             })
     })()
 });
 
-
-function lancerDe() {
-    // random --> [0,1[
-    return Math.floor(6 * Math.random() + 1);
-}
-
-function getCookie(name) {
-    var cookie, c;
-    cookies = document.cookie.split('; ');
-    for (var i = 0; i < cookies.length; i++) {
-        c = cookies[i].split('=');
-        if (c[0] == name) {
-            return c[1];
-        }
-    }
-    return "";
-}
-
-//Lancer les dés
+// Route qui permet le lancer des dés
 app.use("/roll_dices", (req, res) => {
     req_data = req.body;
     console.log(req_data);
     (async (data) => {
-        game = await db.models.Partie.findByPk(data.cookie); // a changer 
-        //console.log(data.de1_ticked);
+        game = await db.models.Partie.findByPk(data.cookie);
         if (!data.de1_ticked && game.de1_active) {
             game.de1 = lancerDe()
         } else {
@@ -146,12 +137,9 @@ app.use("/roll_dices", (req, res) => {
             },
         };
         console.log("values", values);
-        // console.log(values["de1"]["value"]);
-
+        
         var somme = 0;
         for (const element in values) {
-            // console.log(element);
-            // console.log(values[element]["value"]);
             if (values[element]["value"] % 2 !== 0) {
                 somme += values[element]["value"] * values[element]["ticked"]
             }
@@ -166,8 +154,8 @@ app.use("/roll_dices", (req, res) => {
 })
 
 
-//Récupération des dés
-app.post("/get_dices", (req, res) => {
+// Route type
+/* app.post("/get_dices", (req, res) => {
 
     db.models.Partie.findAll({
         "where": {
@@ -179,19 +167,28 @@ app.post("/get_dices", (req, res) => {
         res.end("error")
         console.log(err);
     })
-})
+}) */
 
 
-//Gestion des 404
+// Route qui gère les erreurs 404
 app.use(function (req, res) {
     console.log("Erreur 404 : " + req.url);
 
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/html');
-
-    res.end("<html><head><title>404</title></head><body><h1>Et c'est le 404.</h1><p> ressource non trouvée</p></body></html>");
-
+    res.end("<html><head><title>404</title></head><body><h1>Et c'est le 404.</h1><p>La ressource n'a pas été trouvée.</p></body></html>");
 })
 
-app.listen(port, hostname);
-console.log(`Server running at http://${hostname}:${port}/`);
+
+
+/* 
+Fonctions
+*/
+
+// Fonction qui génère un nombre aléatoire entre 1 et 6
+function lancerDe() {
+    return Math.floor(6 * Math.random() + 1);
+}
+
+
+
