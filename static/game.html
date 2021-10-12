@@ -115,6 +115,13 @@
 </body>
 
 <script>
+
+
+    /*
+    Fonctions
+    */
+
+    // Fonction qui récupère et met en forme le cookie demandé
     function getCookie(name) {
         var cookie, c;
         cookies = document.cookie.split('; ');
@@ -127,21 +134,27 @@
         return "";
     }
 
+    // Fonction qui génère une nouvelle partie (nouvelle entrée dans la base de données)
     function newGame() {
         pseudo = getCookie("pseudo");
-            fetch("/new/?pseudo=" + pseudo)
-                .then(cookie => {
-                    document.cookie = cookie;
-                    console.log("getcookie", getCookie("id_partie"));
-                    fetch("/cookie/?id_partie=" + getCookie("id_partie")).then(
-                        document.location.href = "./game.html"
-                    )
+        fetch("/new/?pseudo=" + pseudo)
+            .then(cookie => {
+                document.cookie = cookie;
+                console.log("getcookie", getCookie("id_partie"));
+                fetch("/cookie/?id_partie=" + getCookie("id_partie")).then(
+                    document.location.href = "./game.html"
+                )
 
-                });
+            });
     }
 
+    // Fontion qui génère le lancer de dés et qui gère le Game Over et l'affichage des dés (serveur)
     function roll_dices() {
+        
+        // Désactive le bouton de lancer de dés après un lancer
         document.querySelector("#roll_dices").style.visibility = 'hidden'
+
+        // Données envoyées au serveur pour le lancer
         data = {
             'de1_ticked': document.querySelector('#tick1').checked,
             'de2_ticked': document.querySelector('#tick2').checked,
@@ -153,6 +166,8 @@
         }
         console.log(data)
 
+
+        // Requête au serveur qui récupère le lancer de dés
         fetch("/roll_dices", {
                 'method': "POST",
                 'headers': {
@@ -160,6 +175,8 @@
                 },
                 'body': JSON.stringify(data)
             })
+
+            // Traitement des données récupérées dans la requête
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -173,43 +190,49 @@
                 document.querySelector('#compteur').textContent = 4 - data.compteur;
                 compteur = data.compteur;
 
+
+                // Désactive les cases non-cochables (conservées et à dé à valeur paire)
                 if (!data.de1_active || !((parseInt(data.de1)) % 2 != 0)) {
                     document.querySelector("#tick1").disabled = true
-                }
-                if (data.de1_active && (parseInt(data.de1)) % 2 != 0) {
-                    document.querySelector("#tick1").disabled = false
                 }
                 if (!data.de2_active || !((parseInt(data.de2)) % 2 != 0)) {
                     document.querySelector("#tick2").disabled = true
                 }
-                if (data.de2_active && (parseInt(data.de2)) % 2 != 0) {
-                    document.querySelector("#tick2").disabled = false
-                }
                 if (!data.de3_active || !((parseInt(data.de3)) % 2 != 0)) {
                     document.querySelector("#tick3").disabled = true
-                }
-                if (data.de3_active && (parseInt(data.de3)) % 2 != 0) {
-                    document.querySelector("#tick3").disabled = false
                 }
                 if (!data.de4_active || !((parseInt(data.de4)) % 2 != 0)) {
                     document.querySelector("#tick4").disabled = true
                 }
-                if (data.de4_active && (parseInt(data.de4)) % 2 != 0) {
-                    document.querySelector("#tick4").disabled = false
-                }
                 if (!data.de5_active || !((parseInt(data.de5)) % 2 != 0)) {
                     document.querySelector("#tick5").disabled = true
                 }
-                if (data.de5_active && (parseInt(data.de5)) % 2 != 0) {
-                    document.querySelector("#tick5").disabled = false
-                }
                 if (!data.de6_active || !((parseInt(data.de6)) % 2 != 0)) {
                     document.querySelector("#tick6").disabled = true
+                }
+
+                // Active les cases cochables (actives et à dé impair)
+                if (data.de1_active && (parseInt(data.de1)) % 2 != 0) {
+                    document.querySelector("#tick1").disabled = false
+                }
+                if (data.de2_active && (parseInt(data.de2)) % 2 != 0) {
+                    document.querySelector("#tick2").disabled = false
+                }
+                if (data.de3_active && (parseInt(data.de3)) % 2 != 0) {
+                    document.querySelector("#tick3").disabled = false
+                }
+                if (data.de4_active && (parseInt(data.de4)) % 2 != 0) {
+                    document.querySelector("#tick4").disabled = false
+                }
+                if (data.de5_active && (parseInt(data.de5)) % 2 != 0) {
+                    document.querySelector("#tick5").disabled = false
                 }
                 if (data.de6_active && (parseInt(data.de6)) % 2 != 0) {
                     document.querySelector("#tick6").disabled = false
                 }
 
+                
+                // Vérification du Game Over (pas de dés utilisables restant ou compteur à zéro)
                 let disabledDices = 0
                 for (let i = 0; i < 6; i++) {
                     if (isDisabled(i) || parseInt(getDice(i)) % 2 == 0) {
@@ -230,14 +253,17 @@
             })
     }
 
+    // Fonction qui renvoie la valeur du dé i (pour le traitement en front)
     function getDice(i) {
         return document.querySelector("#dice" + (i + 1)).textContent
     }
 
+    // Fonciton qui vérifie si la case du dé i est cochée
     function isTicked(i) {
         return document.querySelector("#tick" + (i + 1)).checked
     }
 
+    // Fonction qui calcule le score en front (utilisée à chaque actualisation des cases à cocher de dés)
     function getSumValidTickedNumber() {
         let somme = 0;
         for (let i = 0; i < 6; i++) {
@@ -249,12 +275,14 @@
         return somme;
     }
 
+    // Fonction qui met à jour le score en front en temps réel et qui affiche le bouton "Lancer les dés"
     function majScore(score) {
         document.querySelector("#score").textContent = score;
         document.querySelector("#roll_dices").style.visibility = 'hidden';
         if (isAnyEnabledDiceTicked()) document.querySelector("#roll_dices").style.visibility = 'visible'
     }
 
+    // Fonciton qui vérifie si au moins un dé impair est coché (pour permettre ou non de relancer les dés)
     function isAnyEnabledDiceTicked() {
         for (let i = 0; i < 6; i++) {
             if (isTicked(i) && !isDisabled(i) && parseInt(getDice(i)) % 2 != 0) {
@@ -264,57 +292,37 @@
         return false;
     }
 
+    // Fonction qui vérifie si un dé est désactivé (grisé)
     function isDisabled(i) {
         return document.querySelector("#tick" + (i + 1)).disabled
     }
 
-    // Fonction qui désactive le dé i
-    function disableCheckbox(i) {
-        document.querySelector("#tick" + (i + 1)).disabled = true;
-    }
 
-    // Fonction qui vérifie s'il reste des dés disponibles
-    function isAnyAvaliableDice() {
-        for (let i = 0; i < 6; i++) {
-            if (!isDisabled(i) && parseInt(getDice(i)) % 2 != 0) {
-                return true;
-            }
-        }
-        return false;
-    }
+    
+    /* 
+    Listeners
+    */
 
-    // Fonction qui vérifie si la partie peut continuer et qui l'arrête sinon
-    function isGameOver() {
-        if (!isAnyAvaliableDice()) { //Ajouter && (getCookie("compteur") > 3 || ...
-            for (let i = 0; i < 6; i++) {
-                disableCheckbox(i);
-            }
-            document.querySelector("#gameover").textContent = 'La partie est terminée !';
-            document.querySelector("#replay").style.display = 'block';
-        }
-    }
-
-
-    // Listeners
-
+    // Listener d'arrivée sur la page
     window.onload = (event) => {
         roll_dices();
-        isGameOver();
         document.querySelector("#pseudo").textContent = getCookie("pseudo")
         event.preventDefault();
     };
 
+    // Listener du bouton "Lancer les dés"
     document.querySelector("#roll_dices").addEventListener("click", (event) => {
         roll_dices();
-        isGameOver();
         event.preventDefault();
     });
 
+    // Listener du bouton "Refaire une partie"
     document.querySelector("#replay").addEventListener("click", (event) => {
         newGame();
         event.preventDefault();
     });
 
+    // Listeners de ticks (dés cochés ou non)
     document.querySelector("#tick1").addEventListener("click", (event) => {
         score = getSumValidTickedNumber();
         majScore(score);

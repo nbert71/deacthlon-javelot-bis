@@ -95,6 +95,13 @@
 </body>
 
 <script>
+
+    
+    /*
+    Fonctions
+    */
+
+    // Fonction qui récupère et met en forme le cookie demandé
     function getCookie(name) {
         var cookie, c;
         cookies = document.cookie.split('; ');
@@ -107,6 +114,7 @@
         return "";
     }
 
+    // Fonction qui génère une nouvelle partie (nouvelle entrée dans la base de données)
     function newGame() {
         pseudo = document.querySelector("#pseudo").value;
         if (pseudo !== '') {
@@ -117,26 +125,28 @@
                     fetch("/cookie/?id_partie=" + getCookie("id_partie")).then(
                         document.location.href = "./game.html"
                     )
-
                 });
-
-
-
         } else {
             alert("Vous devez saisir un pseudo pour créer une partie !");
         }
     }
 
-    document.querySelector('#pseudo').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      newGame()
-    }
-});
 
+
+    /* 
+    Listeners
+    */
+
+    // Listener qui vérifie si la touche Entrée est activée lors de la saisie du pseudo
+    document.querySelector('#pseudo').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            newGame()
+        }
+    });
+
+    // Listener qui vérifie si le bouton "Nouvelle partie" à été enclenché
     document.querySelector('#new-game').addEventListener("click", (event) => {
         newGame()
-        //event.preventDefault();
-        //location.reload();
     })
 </script>
 
