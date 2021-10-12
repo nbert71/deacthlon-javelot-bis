@@ -35,8 +35,61 @@
                 <div class="pure-button" id="new-game">Nouvelle partie</div>
             </div>
             <div class="pure-u-1-3"></div>
-
             <div class="pure-u-1-3"></div>
+
+
+            <div class="rules" id="index_rules">
+                <div class="box-title">
+                    Règles du jeu
+                </div>
+                <div class="rules-box">
+                    <li>Commencez par lancer les 6 dés. Écartez alors au moins un dé. Si vous le désirez, relancez tous
+                        les autres. Vous
+                        pouvez réitérer l’opération plusieurs fois, à la condition de toujours écarter au moins un dé à
+                        chaque coup. Mais
+                        attention : seuls les dés de valeur impaire peuvent être écartés. Essayez de conserver ainsi les
+                        dés de valeur
+                        élevée. </li>
+                    <li>À tout moment, vous pouvez décider d’interrompre vos lancers et de conclure là votre tentative.
+                        Par ailleurs une
+                        tentative s’achève automatiquement quand les six dés se trouvent écartés.</li>
+                    <li>Si, après un lancer, vous n’êtes plus en mesure d’écarter un nouveau dé parce que tous montrent
+                        une valeur paire,
+                        votre tentative se solde par un échec.</li>
+                </div>
+            </div>
+
+            <div class="rules" id="index_rules">
+                <div class="box-title">
+                    Tableau des scores
+                </div>
+                <table class="pure-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Pseudo</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Honda</td>
+                            <td>29</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Toyota</td>
+                            <td>22</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Hyundai</td>
+                            <td>20</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>
@@ -54,7 +107,7 @@
         return "";
     }
 
-    document.querySelector('#new-game').addEventListener("click", (event) => {
+    function newGame() {
         pseudo = document.querySelector("#pseudo").value;
         if (pseudo !== '') {
             fetch("/new/?pseudo=" + pseudo)
@@ -64,15 +117,24 @@
                     fetch("/cookie/?id_partie=" + getCookie("id_partie")).then(
                         document.location.href = "./game.html"
                     )
-                    
-                });
-            
 
-            
+                });
+
+
+
         } else {
             alert("Vous devez saisir un pseudo pour créer une partie !");
         }
+    }
 
+    document.querySelector('#pseudo').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      newGame()
+    }
+});
+
+    document.querySelector('#new-game').addEventListener("click", (event) => {
+        newGame()
         //event.preventDefault();
         //location.reload();
     })
