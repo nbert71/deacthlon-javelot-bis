@@ -19,6 +19,15 @@ app.get('/', (req, res) => {
 
 app.use(express.json())
 
+app.get("/cookie/", (req, res) => {
+    console.log(req.query)
+    for (const property in req.query) {
+        // console.log(`${property}: ${req.query[property]}`);
+
+        res.cookie(property, req.query[property])
+        res.end("cookie updated")
+    }
+})
 
 // Création de partie
 app.use('/new', (req, res) => {
@@ -26,28 +35,28 @@ app.use('/new', (req, res) => {
     console.log(pseudo);
     (async () => {
         await db.models.Partie.create({
-            pseudo: pseudo,
-            score: 0,
-            de1: 0,
-            de2: 0,
-            de3: 0,
-            de4: 0,
-            de5: 0,
-            de6: 0,
-            de1_active: true,
-            de2_active: true,
-            de3_active: true,
-            de4_active: true,
-            de5_active: true,
-            de6_active: true,
-            compteur: 0
-        })
-        .then(partie => {
-            console.log(partie.id);
-            res.cookie("id_partie", partie.id);
-            res.end("prout")
-            //console.log(res.cookie);
-        })
+                pseudo: pseudo,
+                score: 0,
+                de1: 0,
+                de2: 0,
+                de3: 0,
+                de4: 0,
+                de5: 0,
+                de6: 0,
+                de1_active: true,
+                de2_active: true,
+                de3_active: true,
+                de4_active: true,
+                de5_active: true,
+                de6_active: true,
+                compteur: 0
+            })
+            .then(partie => {
+                console.log("partie_id", partie.id);
+                res.cookie("id_partie", partie.id);
+                res.end("prout")
+                //console.log(res.cookie);
+            })
     })()
 });
 
@@ -57,85 +66,97 @@ function lancerDe() {
     return Math.floor(6 * Math.random() + 1);
 }
 
+function getCookie(name) {
+    var cookie, c;
+    cookies = document.cookie.split('; ');
+    for (var i = 0; i < cookies.length; i++) {
+        c = cookies[i].split('=');
+        if (c[0] == name) {
+            return c[1];
+        }
+    }
+    return "";
+}
+
 //Lancer les dés
 app.use("/roll_dices", (req, res) => {
     req_data = req.body;
     console.log(req_data);
     (async (data) => {
-        game = await db.models.Partie.findByPk(3);          // a changer 
+        game = await db.models.Partie.findByPk(data.cookie); // a changer 
         //console.log(data.de1_ticked);
-        if (!data.de1_ticked && data.de1_active) {
+        if (!data.de1_ticked && game.de1_active) {
             game.de1 = lancerDe()
         } else {
             game.de1_active = false
         }
-        if (!data.de2_ticked && data.de2_active) {
+        if (!data.de2_ticked && game.de2_active) {
             game.de2 = lancerDe()
         } else {
             game.de2_active = false
         }
-        if (!data.de3_ticked && data.de3_active) {
+        if (!data.de3_ticked && game.de3_active) {
             game.de3 = lancerDe()
         } else {
             game.de3_active = false
         }
-        if (!data.de4_ticked && data.de4_active) {
+        if (!data.de4_ticked && game.de4_active) {
             game.de4 = lancerDe()
         } else {
             game.de4_active = false
         }
-        if (!data.de5_ticked && data.de5_active) {
+        if (!data.de5_ticked && game.de5_active) {
             game.de5 = lancerDe()
         } else {
             game.de5_active = false
         }
-        if (!data.de6_ticked && data.de6_active) {
+        if (!data.de6_ticked && game.de6_active) {
             game.de6 = lancerDe()
         } else {
             game.de6_active = false
         };
         game.compteur += 1;
-        
-        values = {
-            'de1' : {
+
+        var values = {
+            'de1': {
                 'value': game.de1,
-                'ticked': game.de1_ticked
+                'ticked': data.de1_ticked
             },
-            'de2' : {
+            'de2': {
                 'value': game.de2,
-                'ticked': game.de2_ticked
+                'ticked': data.de2_ticked
             },
-            'de3' : {
+            'de3': {
                 'value': game.de3,
-                'ticked': game.de3_ticked
+                'ticked': data.de3_ticked
             },
-            'de4' : {
+            'de4': {
                 'value': game.de4,
-                'ticked': game.de4_ticked
+                'ticked': data.de4_ticked
             },
-            'de5' : {
+            'de5': {
                 'value': game.de5,
-                'ticked': game.de5_ticked
+                'ticked': data.de5_ticked
             },
-            'de6' : {
+            'de6': {
                 'value': game.de6,
-                'ticked': game.de6_ticked
+                'ticked': data.de6_ticked
             },
         };
-        for (let element in values.keys) {
-            if (values.element.value % 2 !== 0 && values.element.ticked == true) {
-                console.log(values.element.value);
-            }
-        }           
-        // var somme = 0;
-        // for (const element in values.keys) {
-        //     if (values.element.value % 2 !== 0 && values.element.ticked == true) {
-        //         console.log(values.element.value);
-        //         somme += values.element.value
-        //     }
-        // }
+        console.log("values", values);
+        // console.log(values["de1"]["value"]);
 
-        // game.score = somme;
+        var somme = 0;
+        for (const element in values) {
+            // console.log(element);
+            // console.log(values[element]["value"]);
+            if (values[element]["value"] % 2 !== 0) {
+                somme += values[element]["value"] * values[element]["ticked"]
+            }
+        }
+        console.log("somme", somme);
+    
+        game.score = somme;
         game.save()
         res.json(game)
     })(req_data)

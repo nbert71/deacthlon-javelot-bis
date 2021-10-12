@@ -106,14 +106,27 @@
 </body>
 
 <script>
+    function getCookie(name) {
+        var cookie, c;
+        cookies = document.cookie.split('; ');
+        for (var i = 0; i < cookies.length; i++) {
+            c = cookies[i].split('=');
+            if (c[0] == name) {
+                return c[1];
+            }
+        }
+        return "";
+    }
+
     document.querySelector("#roll_dices").addEventListener("click", (event) => {
         data = {
-            de1_ticked : document.querySelector('#tick1').checked,
-            de2_ticked : document.querySelector('#tick2').checked,
-            de3_ticked : document.querySelector('#tick3').checked,
-            de4_ticked : document.querySelector('#tick4').checked,
-            de5_ticked : document.querySelector('#tick5').checked,
-            de6_ticked : document.querySelector('#tick6').checked
+            'de1_ticked': document.querySelector('#tick1').checked,
+            'de2_ticked': document.querySelector('#tick2').checked,
+            'de3_ticked': document.querySelector('#tick3').checked,
+            'de4_ticked': document.querySelector('#tick4').checked,
+            'de5_ticked': document.querySelector('#tick5').checked,
+            'de6_ticked': document.querySelector('#tick6').checked,
+            'cookie': getCookie("id_partie")
         }
         console.log(data)
 
@@ -155,6 +168,71 @@
             })
         event.preventDefault();
     })
+</script>
+
+<script>
+    // function getDice(i) {
+    //     return document.querySelector("#dice" + (i + 1)).textContent
+    // }
+
+    // function isTicked(i) {
+    //     return document.querySelector("#tick" + (i + 1)).checked
+    // }
+
+    // function getSumValidTickedNumber() {
+    //     let somme = 0;
+    //     for (let i = 0; i < 6; i++) {
+    //         if (isTicked(i) && parseInt(getDice(i)) % 2 != 0) {
+    //             value = parseInt(getDice(i));
+    //             somme += value;
+    //         }
+    //     }
+    //     return somme;
+    // }
+
+    // function majScore(score) {
+    //     document.querySelector("#score").textContent = score;
+    //     document.querySelector("#roll_dices").style.visibility = 'hidden';
+    //     if (isAnyEnabledDiceTicked()) document.querySelector("#roll_dices").style.visibility = 'visible'
+    // }
+
+    // function isAnyEnabledDiceTicked() {
+    //     for (let i = 0; i < nombreDes; i++) {
+    //         if (isTicked(i) && !isDisabled(i) && parseInt(getDice(i)) % 2 != 0) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    // function isDisabled(i) {
+    //     return document.querySelector("#tick" + (i + 1)).disabled
+    // }
+
+    // document.querySelector("#tick1").addEventListener("click", (event) => {
+    //     score = getSumValidTickedNumber();
+    //     majScore(score);
+    // })
+    // document.querySelector("#tick2").addEventListener("click", (event) => {
+    //     score = getSumValidTickedNumber();
+    //     majScore(score);
+    // })
+    // document.querySelector("#tick3").addEventListener("click", (event) => {
+    //     score = getSumValidTickedNumber();
+    //     majScore(score);
+    // })
+    // document.querySelector("#tick4").addEventListener("click", (event) => {
+    //     score = getSumValidTickedNumber();
+    //     majScore(score);
+    // })
+    // document.querySelector("#tick5").addEventListener("click", (event) => {
+    //     score = getSumValidTickedNumber();
+    //     majScore(score);
+    // })
+    // document.querySelector("#tick6").addEventListener("click", (event) => {
+    //     score = getSumValidTickedNumber();
+    //     majScore(score);
+    // })
 </script>
 
 </html>
