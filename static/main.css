@@ -85,6 +85,15 @@ p {
     color: #FFFFFF;
 }
 
+.compteur {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 900;
+    font-size: x-large;
+    text-align: right;
+    padding: 0px 30px 20px 0px;
+    color: #FFFFFF;
+}
+
 li {
     padding: 7px 0px 7px 0px;
 }
@@ -102,7 +111,7 @@ li {
     background-color: var(--blue3);
     border-radius: 20px;
     text-align: left;
-    margin: 5px 30px 40px 30px;
+    margin: 5px 30px 20px 30px;
     padding: 30px;
     display: flex;
     flex-direction: row;

@@ -45,7 +45,7 @@
             <div class="pure-u-5-24"></div>
 
             <div class="buttons">
-                <a href="./index.html" class="pure-button" id="replay" style="display: none;">Refaire une partie</a>
+                <a href="" class="pure-button" id="replay" style="display: none;">Refaire une partie</a>
             </div>
 
             <div class="box">
@@ -81,14 +81,11 @@
                         <input type="checkbox" class="tick" id="tick6" readonly>
                     </div>
                 </div>
+                <div class="compteur">Lancers restants : <span id="compteur">3</span></div>
             </div>
 
             <div class="buttons">
                 <a href="" class="pure-button" id="roll_dices">Lancer les dés</a>
-            </div>
-
-            <div class="buttons">
-                <a href="./index.html" class="pure-button">Nouvelle partie</a>
             </div>
 
             <div class="rules">
@@ -130,6 +127,19 @@
         return "";
     }
 
+    function newGame() {
+        pseudo = getCookie("pseudo");
+            fetch("/new/?pseudo=" + pseudo)
+                .then(cookie => {
+                    document.cookie = cookie;
+                    console.log("getcookie", getCookie("id_partie"));
+                    fetch("/cookie/?id_partie=" + getCookie("id_partie")).then(
+                        document.location.href = "./game.html"
+                    )
+
+                });
+    }
+
     function roll_dices() {
         document.querySelector("#roll_dices").style.visibility = 'hidden'
         data = {
@@ -160,7 +170,9 @@
                 document.querySelector('#dice5').textContent = data.de5;
                 document.querySelector('#dice6').textContent = data.de6;
                 document.querySelector('#score').textContent = data.score;
+                document.querySelector('#compteur').textContent = 4 - data.compteur;
                 compteur = data.compteur;
+
                 if (!data.de1_active || !((parseInt(data.de1)) % 2 != 0)) {
                     document.querySelector("#tick1").disabled = true
                 }
@@ -295,6 +307,11 @@
     document.querySelector("#roll_dices").addEventListener("click", (event) => {
         roll_dices();
         isGameOver();
+        event.preventDefault();
+    });
+
+    document.querySelector("#replay").addEventListener("click", (event) => {
+        newGame();
         event.preventDefault();
     });
 
