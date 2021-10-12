@@ -55,6 +55,7 @@ app.use('/new', (req, res) => {
                 console.log("partie_id", partie.id);
                 res.cookie("id_partie", partie.id);
                 res.cookie("pseudo", partie.pseudo);
+                res.cookie("compteur", partie.compteur);
                 res.end("prout");
                 //console.log(res.cookie);
             })

@@ -22,7 +22,7 @@
             <div><span id="pseudo">Non connecté</span></div>
             <!-- <div>Meuilleur score : <span id="meilleur_score_session">0</span></div> -->
             <a class="changer_pseudo" href="./index.html">(modifier)</a>
-            
+
         </div>
     </header>
     <div class="main">
@@ -160,22 +160,59 @@
                 document.querySelector('#dice5').textContent = data.de5;
                 document.querySelector('#dice6').textContent = data.de6;
                 document.querySelector('#score').textContent = data.score;
-                if (!data.de1_active) {
+                compteur = data.compteur;
+                if (!data.de1_active || !((parseInt(data.de1)) % 2 != 0)) {
                     document.querySelector("#tick1").disabled = true
                 }
-                if (!data.de2_active) {
+                if (data.de1_active && (parseInt(data.de1)) % 2 != 0) {
+                    document.querySelector("#tick1").disabled = false
+                }
+                if (!data.de2_active || !((parseInt(data.de2)) % 2 != 0)) {
                     document.querySelector("#tick2").disabled = true
                 }
-                if (!data.de3_active) {
+                if (data.de2_active && (parseInt(data.de2)) % 2 != 0) {
+                    document.querySelector("#tick2").disabled = false
+                }
+                if (!data.de3_active || !((parseInt(data.de3)) % 2 != 0)) {
                     document.querySelector("#tick3").disabled = true
                 }
-                if (!data.de4_active) {
+                if (data.de3_active && (parseInt(data.de3)) % 2 != 0) {
+                    document.querySelector("#tick3").disabled = false
+                }
+                if (!data.de4_active || !((parseInt(data.de4)) % 2 != 0)) {
                     document.querySelector("#tick4").disabled = true
                 }
-                if (!data.de5_active) {
+                if (data.de4_active && (parseInt(data.de4)) % 2 != 0) {
+                    document.querySelector("#tick4").disabled = false
+                }
+                if (!data.de5_active || !((parseInt(data.de5)) % 2 != 0)) {
                     document.querySelector("#tick5").disabled = true
                 }
-                if (!data.de6_active) {
+                if (data.de5_active && (parseInt(data.de5)) % 2 != 0) {
+                    document.querySelector("#tick5").disabled = false
+                }
+                if (!data.de6_active || !((parseInt(data.de6)) % 2 != 0)) {
+                    document.querySelector("#tick6").disabled = true
+                }
+                if (data.de6_active && (parseInt(data.de6)) % 2 != 0) {
+                    document.querySelector("#tick6").disabled = false
+                }
+
+                let disabledDices = 0
+                for (let i = 0; i < 6; i++) {
+                    if (isDisabled(i) || parseInt(getDice(i)) % 2 == 0) {
+                        disabledDices += 1
+                    }
+                }
+                if (disabledDices == 6 || compteur > 3) {
+                    document.querySelector("#gameover").textContent = 'La partie est terminée !';
+                    document.querySelector("#replay").style.display = 'block';
+
+                    document.querySelector("#tick1").disabled = true
+                    document.querySelector("#tick2").disabled = true
+                    document.querySelector("#tick3").disabled = true
+                    document.querySelector("#tick4").disabled = true
+                    document.querySelector("#tick5").disabled = true
                     document.querySelector("#tick6").disabled = true
                 }
             })
@@ -219,17 +256,45 @@
         return document.querySelector("#tick" + (i + 1)).disabled
     }
 
+    // Fonction qui désactive le dé i
+    function disableCheckbox(i) {
+        document.querySelector("#tick" + (i + 1)).disabled = true;
+    }
+
+    // Fonction qui vérifie s'il reste des dés disponibles
+    function isAnyAvaliableDice() {
+        for (let i = 0; i < 6; i++) {
+            if (!isDisabled(i) && parseInt(getDice(i)) % 2 != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Fonction qui vérifie si la partie peut continuer et qui l'arrête sinon
+    function isGameOver() {
+        if (!isAnyAvaliableDice()) { //Ajouter && (getCookie("compteur") > 3 || ...
+            for (let i = 0; i < 6; i++) {
+                disableCheckbox(i);
+            }
+            document.querySelector("#gameover").textContent = 'La partie est terminée !';
+            document.querySelector("#replay").style.display = 'block';
+        }
+    }
+
 
     // Listeners
 
     window.onload = (event) => {
-        roll_dices()
+        roll_dices();
+        isGameOver();
         document.querySelector("#pseudo").textContent = getCookie("pseudo")
         event.preventDefault();
     };
 
     document.querySelector("#roll_dices").addEventListener("click", (event) => {
         roll_dices();
+        isGameOver();
         event.preventDefault();
     });
 
