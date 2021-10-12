@@ -65,11 +65,14 @@
                 .then(cookie => {
                     document.cookie = cookie;
                     console.log("getcookie", getCookie("id_partie"));
-                    fetch("/cookie/?id_partie=" + getCookie("id_partie"))
+                    fetch("/cookie/?id_partie=" + getCookie("id_partie")).then(
+                        document.location.href = "./game.html"
+                    )
+                    
                 });
             
 
-            document.querySelector('#jouer').style.display = 'block';
+            
         } else {
             alert("Vous devez saisir un pseudo pour créer une partie !");
         }

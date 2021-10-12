@@ -122,7 +122,7 @@
         return "";
     }
 
-    document.querySelector("#roll_dices").addEventListener("click", (event) => {
+    function roll_dices() {
         document.querySelector("#roll_dices").style.visibility = 'hidden'
         data = {
             'de1_ticked': document.querySelector('#tick1').checked,
@@ -171,11 +171,8 @@
                     document.querySelector("#tick6").disabled = true
                 }
             })
-        event.preventDefault();
-    })
-</script>
+    }
 
-<script>
     function getDice(i) {
         return document.querySelector("#dice" + (i + 1)).textContent
     }
@@ -213,6 +210,19 @@
     function isDisabled(i) {
         return document.querySelector("#tick" + (i + 1)).disabled
     }
+
+
+    // Listeners
+    
+    window.onload = (event) => {
+        roll_dices()
+        event.preventDefault();
+    };
+
+    document.querySelector("#roll_dices").addEventListener("click", (event) => {
+        roll_dices();
+        event.preventDefault();
+    });
 
     document.querySelector("#tick1").addEventListener("click", (event) => {
         score = getSumValidTickedNumber();
