@@ -9,6 +9,10 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
+        game_started: {
+            type: DataTypes.BOOLEAN,
+            allownull: false
+        },
         pseudo: {
             type: DataTypes.STRING,
             allowNull: false

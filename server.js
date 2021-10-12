@@ -35,6 +35,7 @@ app.use('/new', (req, res) => {
     console.log(pseudo);
     (async () => {
         await db.models.Partie.create({
+                game_started: false,
                 pseudo: pseudo,
                 score: 0,
                 de1: 0,
@@ -78,12 +79,23 @@ function getCookie(name) {
     return "";
 }
 
+app.use("/hasGameStarted", (req, res) => {
+    req_data = req.query.id_partie;
+    (async (data) => {
+        game = await db.models.Partie.findByPk(data)
+        .then( partie => {
+            console.log("res.json", partie.game_started)
+            res.json(partie.game_started)
+        })
+    }) (req_data)
+})
+
 //Lancer les dés
 app.use("/roll_dices", (req, res) => {
     req_data = req.body;
     console.log(req_data);
     (async (data) => {
-        game = await db.models.Partie.findByPk(data.cookie); // a changer 
+        game = await db.models.Partie.findByPk(data.cookie);
         //console.log(data.de1_ticked);
         if (!data.de1_ticked && game.de1_active) {
             game.de1 = lancerDe()
@@ -116,6 +128,7 @@ app.use("/roll_dices", (req, res) => {
             game.de6_active = false
         };
         game.compteur += 1;
+        game.game_started = true;
 
         var values = {
             'de1': {

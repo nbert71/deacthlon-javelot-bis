@@ -122,8 +122,12 @@
         return "";
     }
 
-    document.querySelector("#roll_dices").addEventListener("click", (event) => {
-        document.querySelector("#roll_dices").style.visibility = 'hidden'
+function load_dices() {
+    
+}
+
+function roll_dices() {
+    document.querySelector("#roll_dices").style.visibility = 'hidden'
         data = {
             'de1_ticked': document.querySelector('#tick1').checked,
             'de2_ticked': document.querySelector('#tick2').checked,
@@ -171,8 +175,36 @@
                     document.querySelector("#tick6").disabled = true
                 }
             })
-        event.preventDefault();
+}
+
+function hasGameStarted() {
+    console.log("enter function");
+    data = getCookie("id_partie")
+    fetch("/hasGameStarted/?id_partie=" + data)
+    .then(response => {
+    console.log(response.json());
+    response.json();
     })
+    .then(b => {
+        console.log(b)
+        return b
+    })
+}
+
+    window.onload = (event) => {
+        console.log("arrive");
+        if (!hasGameStarted()) {
+            console.log("game not started");
+            roll_dices()
+        }
+        else load_dices()
+        event.preventDefault();
+        };
+
+    document.querySelector("#roll_dices").addEventListener("click", (event) => {
+        roll_dices();
+        event.preventDefault();
+    });
 </script>
 
 <script>
