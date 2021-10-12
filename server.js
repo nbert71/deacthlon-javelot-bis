@@ -154,20 +154,31 @@ app.use("/roll_dices", (req, res) => {
 })
 
 
-// Route type
-/* app.post("/get_dices", (req, res) => {
+// Route tableau des scores
+ app.use("/get_scores", (req, res) => {
+    //console.log("coucou");
+    (async () => {
+        game = await db.models.Partie.findAll({
+            attributes: ['pseudo', 'score'],
+            order: [['score', 'DESC']],
+            limit: 3
+        })
+        .then(data => {
+            //console.log("best-games : ", data);
+            var scores = []
+            for (let i = 0; i < 3; i++) {
+                liste = [
+                    data[i]['dataValues']['pseudo'],
+                    data[i]['dataValues']['score']
+                ]
+                scores.push(liste);
+            }
 
-    db.models.Partie.findAll({
-        "where": {
-            "pseudo": req.query.pseudo
-        }
-    }).then((message) => {
-        res.json(message)
-    }).catch((err) => {
-        res.end("error")
-        console.log(err);
-    })
-}) */
+            console.log("scores : ", scores);
+            res.json(scores);
+        })
+    })()
+})
 
 
 // Route qui gère les erreurs 404

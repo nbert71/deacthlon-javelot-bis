@@ -84,8 +84,8 @@
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td id="pseudo3">Hyundai</td>
-                            <td id="score3">20</td>
+                            <td id="pseudo3">Joueur3</td>
+                            <td id="score3">0</td>
                         </tr>
                     </tbody>
                 </table>
@@ -148,6 +148,26 @@
     document.querySelector('#new-game').addEventListener("click", (event) => {
         newGame()
     })
+
+
+    
+    // Listener d'arrivée sur la page
+    window.onload = (event) => {
+        fetch("/get_scores")
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+
+                for (let i = 0; i < 3; i++) {
+                    document.querySelector("#pseudo" + (i+1)).textContent = data[i][0];
+                    document.querySelector("#score" + (i+1)).textContent = data[i][1];
+                }
+            })
+        event.preventDefault();
+    };
+
+    
+            
 </script>
 
 </html>
