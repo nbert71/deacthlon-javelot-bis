@@ -54,6 +54,7 @@ app.use('/new', (req, res) => {
             .then(partie => {
                 console.log("partie_id", partie.id);
                 res.cookie("id_partie", partie.id);
+                res.cookie("pseudo", partie.pseudo)
                 res.end("prout")
                 //console.log(res.cookie);
             })

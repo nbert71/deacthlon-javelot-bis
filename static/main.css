@@ -11,11 +11,36 @@ html, body {
     background-color: var(--blue1);
 }
 
+.changer_pseudo {
+    color: rgb(56, 56, 56);
+    font-weight: 200;
+    font-size: 15pt;
+    font-style: italic;
+}
+
+.pure-table {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 900;
+    background-color: transparent;
+    font-size: x-large;
+    display: flex;
+    flex-direction: column;
+    table-layout: 1 1 10;
+    margin: 0px 20px 20px 20px;
+    flex: 100%;
+    color: #FFFFFF;
+}
+
+thead {
+    background-color: transparent;
+    color: #FFFFFF;
+}
+
 .pure-g {
     letter-spacing: 0cm;
 }
 .main {
-      margin-top: 50px;
+      margin-top: 40px;
       margin-left: auto;
       margin-right: auto;
       width: 80vw;
@@ -128,7 +153,15 @@ li {
 #new-game {
     margin-top: 20px;
 }
-#jouer {
-    margin: 10px;
-    display: none;
+
+#index_rules {
+    margin-top: 50pt;
+}
+
+.info_session {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 20pt;
+    text-align: right;
+    margin: 10pt;
 }
